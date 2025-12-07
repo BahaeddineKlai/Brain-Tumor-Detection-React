@@ -1,8 +1,5 @@
-Here is **one single, complete `README.md` text** you can copy-paste directly. It includes **setup, running the project, and code explanations**, in **French**, assuming the project is downloaded from GitHub.
 
----
 
-````md
 # Frontend React – Classification de Tumeurs Cérébrales
 
 Cette application est l’interface web du projet.  
