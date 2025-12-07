@@ -1,70 +1,132 @@
-# Getting Started with Create React App
+Here is **one single, complete `README.md` text** you can copy-paste directly. It includes **setup, running the project, and code explanations**, in **French**, assuming the project is downloaded from GitHub.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+````md
+# Frontend React – Classification de Tumeurs Cérébrales
 
-In the project directory, you can run:
+Cette application est l’interface web du projet.  
+Elle permet à l’utilisateur de télécharger une image IRM et de l’envoyer à une API FastAPI pour obtenir une prédiction.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📥 Installation du projet
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Après avoir téléchargé le projet depuis GitHub, ouvrez un terminal dans le dossier du projet puis exécutez :
 
-### `npm test`
+```bash
+npm install
+````
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Cela installe toutes les dépendances nécessaires.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ▶️ Lancer l’application
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Pour démarrer le serveur de développement React :
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm run dev
+```
 
-### `npm run eject`
+ou, selon la configuration du projet :
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Une adresse locale sera affichée dans le terminal, par exemple :
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+http://localhost:5173
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Ouvrez ce lien dans votre navigateur.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🔗 Lien avec le backend
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+L’application communique avec l’API FastAPI via :
 
-### Code Splitting
+```js
+const API_URL = 'http://127.0.0.1:8000';
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Le backend doit être lancé en même temps que le frontend.
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🧩 Explication simple du code
 
-### Making a Progressive Web App
+### 1. Gestion des états
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```js
+const [selectedFile, setSelectedFile] = useState(null);
+const [previewUrl, setPreviewUrl] = useState(null);
+const [prediction, setPrediction] = useState(null);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState('');
+```
 
-### Advanced Configuration
+Ces variables servent à stocker :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* l’image choisie
+* l’aperçu
+* les résultats du modèle
+* l’état de chargement
+* les erreurs
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### 2. Sélection de l’image
 
-### `npm run build` fails to minify
+```js
+const handleFileChange = useCallback((event) => {
+    const file = event.target.files[0];
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ce bloc récupère le fichier sélectionné.
+
+Il vérifie que c’est bien une image avant de l’enregistrer.
+
+---
+
+### 3. Envoi vers l’API
+
+```js
+const formData = new FormData();
+formData.append('file', selectedFile);
+```
+
+L’image est envoyée à l’API avec :
+
+```js
+fetch(`${API_URL}/predict`, { method: 'POST', body: formData });
+```
+
+---
+
+### 4. Réception de la réponse
+
+```js
+const result = await response.json();
+setPrediction(result);
+```
+
+On récupère le résultat et on l’affiche automatiquement dans l’interface.
+
+---
+
+### 5. Affichage intelligent des couleurs
+
+```js
+if (conf >= 0.9) return 'bg-green-600';
+if (conf >= 0.7) return 'bg-yellow-500';
+return 'bg-red-500';
+```
+
+La couleur change selon le niveau de confiance du modèle.
+
+---
